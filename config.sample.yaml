@@ -1,0 +1,10 @@
+matrix:
+  homeserver: matrix.org
+  access_token: ACCESS_TOKEN
+  mxid: @acmenews:matrix.org
+
+feeds:
+  - url: http://www.acme.org/feed/
+    event_type: network.informo.news.acme
+    fields:
+      content: "content:encoded"

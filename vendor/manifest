@@ -1,0 +1,121 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/Informo/goutils",
+			"repository": "https://github.com/Informo/goutils",
+			"revision": "e4783b5d2c0d199d8ebd037a7d075db527f6b8d5",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/PuerkitoBio/goquery",
+			"repository": "https://github.com/PuerkitoBio/goquery",
+			"revision": "1a71cc719d0d5b9e4f14ae072bef08b576b0bab5",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/andybalholm/cascadia",
+			"repository": "https://github.com/andybalholm/cascadia",
+			"revision": "349dd0209470eabd9514242c688c403c0926d266",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/codegangsta/cli",
+			"repository": "https://github.com/codegangsta/cli",
+			"revision": "119bb6564841921ce6f1401e0f5d75317bdd9f4d",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/matrix-org/gomatrix",
+			"repository": "https://github.com/matrix-org/gomatrix",
+			"revision": "a7fc80c8060c2544fe5d4dae465b584f8e9b4e27",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mattn/go-sqlite3",
+			"repository": "https://github.com/mattn/go-sqlite3",
+			"revision": "d5ffb5c0cca8778699a929b236766f4a7af674e8",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mmcdole/gofeed",
+			"repository": "https://github.com/mmcdole/gofeed",
+			"revision": "789877bf2104a80cfa908abba482410fcba1a8a7",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mmcdole/goxpp",
+			"repository": "https://github.com/mmcdole/goxpp",
+			"revision": "77e4a51a73ed99ee3f33c1474dc166866304acbd",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/vabd/gofeed",
+			"repository": "https://github.com/vabd/gofeed",
+			"revision": "d5a82ca36eaf0aefcb4f03d61eb8815afbd26a39",
+			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/net/context",
+			"repository": "https://go.googlesource.com/net",
+			"revision": "dc871a5d77e227f5bbf6545176ef3eeebf87e76e",
+			"branch": "master",
+			"path": "/context"
+		},
+		{
+			"importpath": "golang.org/x/net/html",
+			"repository": "https://go.googlesource.com/net",
+			"revision": "a8b9294777976932365dabb6640cf1468d95c70f",
+			"branch": "master",
+			"path": "/html"
+		},
+		{
+			"importpath": "golang.org/x/text/encoding",
+			"repository": "https://go.googlesource.com/text",
+			"revision": "57961680700a5336d15015c8c50686ca5ba362a4",
+			"branch": "master",
+			"path": "/encoding"
+		},
+		{
+			"importpath": "golang.org/x/text/internal/tag",
+			"repository": "https://go.googlesource.com/text",
+			"revision": "57961680700a5336d15015c8c50686ca5ba362a4",
+			"branch": "master",
+			"path": "/internal/tag"
+		},
+		{
+			"importpath": "golang.org/x/text/internal/utf8internal",
+			"repository": "https://go.googlesource.com/text",
+			"revision": "57961680700a5336d15015c8c50686ca5ba362a4",
+			"branch": "master",
+			"path": "/internal/utf8internal"
+		},
+		{
+			"importpath": "golang.org/x/text/language",
+			"repository": "https://go.googlesource.com/text",
+			"revision": "57961680700a5336d15015c8c50686ca5ba362a4",
+			"branch": "master",
+			"path": "/language"
+		},
+		{
+			"importpath": "golang.org/x/text/runes",
+			"repository": "https://go.googlesource.com/text",
+			"revision": "57961680700a5336d15015c8c50686ca5ba362a4",
+			"branch": "master",
+			"path": "/runes"
+		},
+		{
+			"importpath": "golang.org/x/text/transform",
+			"repository": "https://go.googlesource.com/text",
+			"revision": "57961680700a5336d15015c8c50686ca5ba362a4",
+			"branch": "master",
+			"path": "/transform"
+		},
+		{
+			"importpath": "gopkg.in/yaml.v2",
+			"repository": "https://gopkg.in/yaml.v2",
+			"revision": "287cf08546ab5e7e37d55a84f7ed3fd1db036de5",
+			"branch": "v2"
+		}
+	]
+}
