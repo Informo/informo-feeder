@@ -1,3 +1,3 @@
 package common
 
-const InformoRoomID = "!UFUOyvJTXNdkrBqgYU:matrix.org"
+const InformoRoomID = "!xkMuBYHNWUOLHIoOEw:matrix.org"
