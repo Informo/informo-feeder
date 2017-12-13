@@ -1,0 +1,12 @@
+[Unit]
+Description=RSS 2 Informo news publisher
+After=network.target
+
+[Service]
+User=rss2informo
+PermissionsStartOnly=true
+ExecStart=/usr/bin/rss2informo --config /etc/rss2informo/config.yaml
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
