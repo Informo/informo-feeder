@@ -5,6 +5,8 @@ import (
 	"rss2informo/config"
 
 	"github.com/mmcdole/gofeed"
+
+	"github.com/sirupsen/logrus"
 )
 
 type NewsContent struct {
@@ -33,7 +35,11 @@ func (p *Poller) sendMatrixEventFromItem(
 		return
 	}
 
-	println("Event " + feed.EventType + " published with ID " + r.EventID)
+	logrus.WithFields(logrus.Fields{
+		"feedURL":   feed.URL,
+		"eventType": feed.EventType,
+		"eventID":   r.EventID,
+	}).Info("Event published")
 
 	return nil
 }

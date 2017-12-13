@@ -3,6 +3,7 @@ package config
 import (
 	"io/ioutil"
 
+	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
 
@@ -38,6 +39,8 @@ func Load(filePath string) (cfg Config, err error) {
 	if err != nil {
 		return
 	}
+
+	logrus.Info("Config loaded")
 
 	return
 }

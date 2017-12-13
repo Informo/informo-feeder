@@ -50,10 +50,23 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/sirupsen/logrus",
+			"repository": "https://github.com/sirupsen/logrus",
+			"revision": "d682213848ed68c0a260ca37d6dd5ace8423f5ba",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/vabd/gofeed",
 			"repository": "https://github.com/vabd/gofeed",
 			"revision": "d5a82ca36eaf0aefcb4f03d61eb8815afbd26a39",
 			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/crypto/ssh/terminal",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "94eea52f7b742c7cbe0b03b22f0c4c8631ece122",
+			"branch": "master",
+			"path": "/ssh/terminal"
 		},
 		{
 			"importpath": "golang.org/x/net/context",
@@ -68,6 +81,13 @@
 			"revision": "a8b9294777976932365dabb6640cf1468d95c70f",
 			"branch": "master",
 			"path": "/html"
+		},
+		{
+			"importpath": "golang.org/x/sys/unix",
+			"repository": "https://go.googlesource.com/sys",
+			"revision": "53aa286056ef226755cd898109dbcdaba8ac0b81",
+			"branch": "master",
+			"path": "/unix"
 		},
 		{
 			"importpath": "golang.org/x/text/encoding",

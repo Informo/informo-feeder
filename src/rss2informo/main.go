@@ -8,6 +8,8 @@ import (
 	"rss2informo/poller"
 
 	"github.com/matrix-org/gomatrix"
+
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -15,16 +17,18 @@ var (
 )
 
 func main() {
+	logConfig()
+
 	flag.Parse()
 
 	cfg, err := config.Load(*configFile)
 	if err != nil {
-		panic(err)
+		logrus.Panic(err)
 	}
 
 	db, err := database.NewDatabase(cfg.Database.Path)
 	if err != nil {
-		panic(err)
+		logrus.Panic(err)
 	}
 
 	client, err := gomatrix.NewClient(
@@ -34,6 +38,7 @@ func main() {
 	p := poller.NewPoller(db, client)
 	for _, feed := range cfg.Feeds {
 		go p.StartPolling(feed)
+		logrus.WithField("feedURL", feed.URL).Info("Poller started")
 	}
 
 	select {}

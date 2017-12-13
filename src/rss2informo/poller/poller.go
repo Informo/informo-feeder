@@ -1,7 +1,6 @@
 package poller
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -10,6 +9,7 @@ import (
 
 	"github.com/matrix-org/gomatrix"
 	"github.com/mmcdole/gofeed"
+	"github.com/sirupsen/logrus"
 )
 
 type Poller struct {
@@ -30,19 +30,21 @@ func (p *Poller) StartPolling(feed config.Feed) {
 	for {
 		timeToSleep, err := p.getDurationBeforePoll(feed)
 		if err != nil {
-			panic(err)
+			logrus.Panic(err)
 		}
 
 		time.Sleep(timeToSleep * time.Second)
 
+		logrus.WithField("feedURL", feed.URL).Info("Polling")
+
 		_, latestItemTime, err := p.getLatestPosition(feed.URL)
 		if err != nil {
-			panic(err)
+			logrus.Panic(err)
 		}
 
 		resp, err := http.Get(feed.URL)
 		if err != nil {
-			panic(err)
+			logrus.Panic(err)
 		}
 
 		if resp.StatusCode != http.StatusOK {
@@ -51,19 +53,18 @@ func (p *Poller) StartPolling(feed config.Feed) {
 
 		f, err := p.parser.Parse(resp.Body)
 		if err != nil {
-			panic(err)
+			logrus.Panic(err)
 		}
 
 		for _, i := range f.Items {
 			if i.PublishedParsed.After(latestItemTime) {
-				fmt.Printf(
-					"Got new element of title %s at date %s\n",
-					i.Title,
-					i.PublishedParsed.String(),
-				)
+				logrus.WithFields(logrus.Fields{
+					"title":         i.Title,
+					"publishedDate": i.PublishedParsed.String(),
+				}).Info("Got a new item")
 
 				if err = p.sendMatrixEventFromItem(feed, i); err != nil {
-					panic(err)
+					logrus.Panic(err)
 				}
 			}
 		}
