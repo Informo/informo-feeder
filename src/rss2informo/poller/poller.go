@@ -26,7 +26,7 @@ func NewPoller(db *database.Database, mxClient *gomatrix.Client) *Poller {
 	}
 }
 
-func (p *Poller) StartPolling(feed config.Feed) error {
+func (p *Poller) StartPolling(feed config.Feed) {
 	for {
 		timeToSleep, err := p.getDurationBeforePoll(feed)
 		if err != nil {
@@ -34,8 +34,6 @@ func (p *Poller) StartPolling(feed config.Feed) error {
 		}
 
 		time.Sleep(timeToSleep * time.Second)
-
-		println("--------------------")
 
 		_, latestItemTime, err := p.getLatestPosition(feed.URL)
 		if err != nil {
@@ -58,14 +56,20 @@ func (p *Poller) StartPolling(feed config.Feed) error {
 
 		for _, i := range f.Items {
 			if i.PublishedParsed.After(latestItemTime) {
-				fmt.Printf("Got new element of title %s at date %s\n", i.Description, i.PublishedParsed.String())
+				fmt.Printf(
+					"Got new element of title %s at date %s\n",
+					i.Title,
+					i.PublishedParsed.String(),
+				)
+
+				if err = p.sendMatrixEventFromItem(feed, i); err != nil {
+					panic(err)
+				}
 			}
 		}
 
 		p.updateLatestPosition(feed.URL, f.Items[0])
 	}
-
-	return nil
 }
 
 func (p *Poller) getDurationBeforePoll(feed config.Feed) (timeToPoll time.Duration, err error) {
