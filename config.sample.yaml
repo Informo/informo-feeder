@@ -4,7 +4,9 @@ matrix:
   mxid: @acmenews:matrix.org
 
 feeds:
-  - url: http://www.acme.org/feed/
-    event_type: network.informo.news.acme
-    fields:
-      content: "content:encoded"
+  - url: "http://www.acmenews.org/feed/"
+    event_type: "network.informo.news.acmenews"
+    poll_interval: 3600
+
+database:
+  path: ./rss2informo.db
