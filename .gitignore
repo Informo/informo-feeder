@@ -4,3 +4,5 @@ pkg
 config.yaml
 
 *.db
+
+_test
