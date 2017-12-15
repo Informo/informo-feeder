@@ -56,22 +56,23 @@ func (p *Poller) StartPolling(feed config.Feed) {
 			logrus.Panic(err)
 		}
 
-		for _, i := range f.Items {
-			if len(i.Content) > 0 && i.PublishedParsed.After(latestItemTime) {
+		for i := len(f.Items) - 1; i >= 0; i-- {
+			item := f.Items[i]
+			if len(item.Content) > 0 && item.PublishedParsed.After(latestItemTime) {
 				logrus.WithFields(logrus.Fields{
-					"title":         i.Title,
-					"publishedDate": i.PublishedParsed.String(),
+					"title":         item.Title,
+					"publishedDate": item.PublishedParsed.String(),
 				}).Info("Got a new item")
 
-				if err = p.replaceMedias(&(i.Content)); err != nil {
+				if err = p.replaceMedias(&(item.Content)); err != nil {
 					logrus.Panic(err)
 				}
 
-				if err = p.sendMatrixEventFromItem(feed, i); err != nil {
+				if err = p.sendMatrixEventFromItem(feed, item); err != nil {
 					logrus.Panic(err)
 				}
 			}
-			p.updateLatestPosition(feed.URL, f.Items[0])
+			p.updateLatestPosition(feed.URL, item)
 
 			time.Sleep(500 * time.Millisecond)
 		}
