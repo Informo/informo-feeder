@@ -57,7 +57,7 @@ func (p *Poller) StartPolling(feed config.Feed) {
 		}
 
 		for _, i := range f.Items {
-			if i.PublishedParsed.After(latestItemTime) {
+			if len(i.Content) > 0 && i.PublishedParsed.After(latestItemTime) {
 				logrus.WithFields(logrus.Fields{
 					"title":         i.Title,
 					"publishedDate": i.PublishedParsed.String(),
@@ -67,9 +67,10 @@ func (p *Poller) StartPolling(feed config.Feed) {
 					logrus.Panic(err)
 				}
 			}
-		}
+			p.updateLatestPosition(feed.URL, f.Items[0])
 
-		p.updateLatestPosition(feed.URL, f.Items[0])
+			time.Sleep(500 * time.Millisecond)
+		}
 	}
 }
 
