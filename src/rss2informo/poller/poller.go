@@ -63,6 +63,10 @@ func (p *Poller) StartPolling(feed config.Feed) {
 					"publishedDate": i.PublishedParsed.String(),
 				}).Info("Got a new item")
 
+				if err = p.replaceMedias(&(i.Content)); err != nil {
+					logrus.Panic(err)
+				}
+
 				if err = p.sendMatrixEventFromItem(feed, i); err != nil {
 					logrus.Panic(err)
 				}
