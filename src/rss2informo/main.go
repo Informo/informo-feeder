@@ -14,12 +14,13 @@ import (
 
 var (
 	configFile = flag.String("config", "config.yaml", "Configuration file")
+	debug      = flag.Bool("debug", false, "Print debugging messages")
 )
 
 func main() {
-	logConfig()
-
 	flag.Parse()
+
+	logConfig()
 
 	cfg, err := config.Load(*configFile)
 	if err != nil {

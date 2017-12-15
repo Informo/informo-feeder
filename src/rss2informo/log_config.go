@@ -14,6 +14,10 @@ func (f utcFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 }
 
 func logConfig() error {
+	if *debug {
+		logrus.SetLevel(logrus.DebugLevel)
+	}
+
 	logrus.SetFormatter(&utcFormatter{
 		&logrus.TextFormatter{
 			TimestampFormat:  "2006-01-02T15:04:05.000000000Z07:00",
