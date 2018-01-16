@@ -19,8 +19,8 @@ import (
 	"bytes"
 	"errors"
 
-	"rss2informo/common"
-	"rss2informo/config"
+	"informo-feeder/common"
+	"informo-feeder/config"
 
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"

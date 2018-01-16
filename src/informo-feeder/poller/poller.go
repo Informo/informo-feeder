@@ -19,9 +19,9 @@ import (
 	"net/http"
 	"time"
 
-	"rss2informo/config"
-	"rss2informo/database"
-	"rss2informo/pgp"
+	"informo-feeder/config"
+	"informo-feeder/database"
+	"informo-feeder/pgp"
 
 	"github.com/matrix-org/gomatrix"
 	"github.com/mmcdole/gofeed"

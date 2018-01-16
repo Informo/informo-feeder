@@ -1,0 +1,12 @@
+[Unit]
+Description=Informo feeder
+After=network.target
+
+[Service]
+User=informo-feeder
+PermissionsStartOnly=true
+ExecStart=/usr/bin/informo-feeder --config /etc/informo-feeder/config.yaml
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

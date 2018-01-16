@@ -25,4 +25,4 @@ feeds:
 
 # Database to store poll status. Currently only SQLite3 databases are supported
 database:
-  path: ./rss2informo.db
+  path: ./informo-feeder.db

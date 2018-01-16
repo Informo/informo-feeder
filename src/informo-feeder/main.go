@@ -18,10 +18,10 @@ package main
 import (
 	"flag"
 
-	"rss2informo/config"
-	"rss2informo/database"
-	"rss2informo/pgp"
-	"rss2informo/poller"
+	"informo-feeder/config"
+	"informo-feeder/database"
+	"informo-feeder/pgp"
+	"informo-feeder/poller"
 
 	"github.com/matrix-org/gomatrix"
 

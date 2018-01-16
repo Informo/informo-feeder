@@ -1,10 +1,10 @@
-# RSS 2 Informo
+# Informo feeder
 
-RSS 2 (to) Informo is a tool to publish news over the Informo network from a RSS or Atom feed.
+The Informo feeder is a tool to publish news over the Informo network from a RSS or Atom feed.
 
 ## Build
 
-You can either install RSS 2 Informo by using a release on one of the [repository's releases](https://github.com/Informo/rss2informo/releases), or by building it by yourself.
+You can either install the Informo feeder by using a release on one of the [repository's releases](https://github.com/Informo/informo-feeder/releases), or by building it by yourself.
 
 The projet is built using [gb](https://getgb.io/), which you can install by running:
 
@@ -15,23 +15,23 @@ go get github.com/constabulary/gb/...
 Then all you need to do is:
 
 ```bash
-git clone https://github.com/Informo/rss2informo
-cd rss2informo
+git clone https://github.com/Informo/informo-feeder
+cd informo-feeder
 gb build
 ```
 
-You can the run RSS 2 Informo by calling:
+You can the run the Informo feeder by calling:
 
 ```
-./bin/rss2informo
+./bin/informo-feeder
 ```
 
 ## Configure
 
-RSS 2 Informo needs a configuration file to run. If not provided in the command line call, the file `config.yaml` (located in the current directory) is used by default. You can override this default by running rss2informo as:
+The Informo feeder needs a configuration file to run. If not provided in the command line call, the file `config.yaml` (located in the current directory) is used by default. You can override this default by running informo-feeder as:
 
 ```bash
-rss2informo --config /path/to/config.yaml
+informo-feeder --config /path/to/config.yaml
 ```
 
 The configuration file should look as follow:
@@ -48,7 +48,7 @@ feeds:
     poll_interval: 3600
 
 database:
-  path: ./rss2informo.db
+  path: ./informo-feeder.db
 ```
 
 The configuration file is made of three parts:
@@ -64,13 +64,13 @@ The configuration file is made of three parts:
 * The `database` part contains all the necessary parameters to connect to the database:
     + The `path` is the path to the SQLite3 database.
 
-The database is used by RSS 2 Informo to store data about the latest poll. It is mainly used to keep track of the latest poll for each feed, so an item doesn't get published more than once on the network, and so a restart doesn't reset the interval between two polls.
+The database is used by the Informo feeder to store data about the latest poll. It is mainly used to keep track of the latest poll for each feed, so an item doesn't get published more than once on the network, and so a restart doesn't reset the interval between two polls.
 
 ## Getting your content on Informo
 
 So as to avoid spam or impersonation, new sources can only be added by manual action from an Informo administrator. This may change later along Matrix's efforts towards decentralised reputation.
 
-If you wish to add a news source to the Informo network, please send an email to an Informo administrator at <admin@informo.network>. Your email should include the Matrix ID of the account RSS 2 Informo will use to publish news (if you have one set up), along with the URL of your source's website and feed. Your feed must contain the following elements for each RSS item/Atom entry:
+If you wish to add a news source to the Informo network, please send an email to an Informo administrator at <admin@informo.network>. Your email should include the Matrix ID of the account the Informo feeder will use to publish news (if you have one set up), along with the URL of your source's website and feed. Your feed must contain the following elements for each RSS item/Atom entry:
 
 Content | RSS item sub-tag | Atom entry sub-tag
 --- | --- | ---

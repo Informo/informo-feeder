@@ -16,8 +16,8 @@
 package poller
 
 import (
-	"rss2informo/common"
-	"rss2informo/config"
+	"informo-feeder/common"
+	"informo-feeder/config"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/sirupsen/logrus"
