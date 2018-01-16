@@ -1,12 +1,28 @@
+# Settings to access the PGP private key (which will be used to sign events)
+# This can also be expressed this way to access the private key as a file:
+#
+#   pgp:
+#     use_agent: false
+#     key_file: /path/to/key.asc
+#     key_passphrase: hackme
+pgp:
+  use_agent: true
+  key_id: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  key_passphrase: hackme
+
+# Settings to authenticate to a Matrix homeserver in order to access the Informo
+# network
 matrix:
   homeserver: matrix.org
   access_token: ACCESS_TOKEN
   mxid: @acmenews:matrix.org
 
+# Configuration for feeds to poll and parse, and polling interval
 feeds:
   - url: "http://www.acmenews.org/feed/"
     event_type: "network.informo.news.acmenews"
     poll_interval: 3600
 
+# Database to store poll status. Currently only SQLite3 databases are supported
 database:
   path: ./rss2informo.db

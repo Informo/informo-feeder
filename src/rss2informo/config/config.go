@@ -39,6 +39,7 @@ type Feed struct {
 }
 
 type Config struct {
+	PGP      PGPConfig      `yaml:"pgp"`
 	Matrix   MatrixConfig   `yaml:"matrix"`
 	Feeds    []Feed         `yaml:"feeds"`
 	Database DatabaseConfig `yaml:"database"`
