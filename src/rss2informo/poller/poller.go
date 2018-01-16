@@ -21,6 +21,7 @@ import (
 
 	"rss2informo/config"
 	"rss2informo/database"
+	"rss2informo/pgp"
 
 	"github.com/matrix-org/gomatrix"
 	"github.com/mmcdole/gofeed"
@@ -28,16 +29,22 @@ import (
 )
 
 type Poller struct {
-	db       *database.Database
-	mxClient *gomatrix.Client
-	parser   *gofeed.Parser
+	db        *database.Database
+	mxClient  *gomatrix.Client
+	parser    *gofeed.Parser
+	pgpEntity *pgp.Entity
 }
 
-func NewPoller(db *database.Database, mxClient *gomatrix.Client) *Poller {
+func NewPoller(
+	db *database.Database,
+	mxClient *gomatrix.Client,
+	pgpEntity *pgp.Entity,
+) *Poller {
 	return &Poller{
-		db:       db,
-		mxClient: mxClient,
-		parser:   gofeed.NewParser(),
+		db:        db,
+		mxClient:  mxClient,
+		parser:    gofeed.NewParser(),
+		pgpEntity: pgpEntity,
 	}
 }
 

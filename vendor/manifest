@@ -62,6 +62,34 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "golang.org/x/crypto/cast5",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "13931e22f9e72ea58bb73048bc752b48c6d4d4ac",
+			"branch": "master",
+			"path": "/cast5"
+		},
+		{
+			"importpath": "golang.org/x/crypto/openpgp",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "13931e22f9e72ea58bb73048bc752b48c6d4d4ac",
+			"branch": "master",
+			"path": "/openpgp"
+		},
+		{
+			"importpath": "golang.org/x/crypto/openpgp/armor",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "13931e22f9e72ea58bb73048bc752b48c6d4d4ac",
+			"branch": "master",
+			"path": "/openpgp/armor"
+		},
+		{
+			"importpath": "golang.org/x/crypto/openpgp/packet",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "13931e22f9e72ea58bb73048bc752b48c6d4d4ac",
+			"branch": "master",
+			"path": "/openpgp/packet"
+		},
+		{
 			"importpath": "golang.org/x/crypto/ssh/terminal",
 			"repository": "https://go.googlesource.com/crypto",
 			"revision": "94eea52f7b742c7cbe0b03b22f0c4c8631ece122",

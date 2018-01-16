@@ -20,18 +20,8 @@ import (
 	"rss2informo/config"
 
 	"github.com/mmcdole/gofeed"
-
 	"github.com/sirupsen/logrus"
 )
-
-type NewsContent struct {
-	Headline    string `json:"headline"`
-	Content     string `json:"content"`
-	Description string `json:"description"`
-	Date        int64  `json:"date"` // Timestamp in seconds
-	Author      string `json:"author"`
-	Link        string `json:"link"`
-}
 
 func (p *Poller) sendMatrixEventFromItem(
 	feed config.Feed, feedItem *gofeed.Item,
@@ -59,7 +49,9 @@ func (p *Poller) sendMatrixEventFromItem(
 	return nil
 }
 
-func (p *Poller) getEventContent(item *gofeed.Item) (content NewsContent, err error) {
+func (p *Poller) getEventContent(
+	item *gofeed.Item,
+) (content common.NewsContent, err error) {
 	var authorName string
 	if item.Author == nil {
 		authorName = ""
@@ -67,7 +59,7 @@ func (p *Poller) getEventContent(item *gofeed.Item) (content NewsContent, err er
 		authorName = item.Author.Name
 	}
 
-	content = NewsContent{
+	content = common.NewsContent{
 		Headline:    item.Title,
 		Content:     item.Content,
 		Description: item.Description,
@@ -76,5 +68,6 @@ func (p *Poller) getEventContent(item *gofeed.Item) (content NewsContent, err er
 		Link:        item.Link,
 	}
 
+	err = p.pgpEntity.SignNews(&content)
 	return
 }
