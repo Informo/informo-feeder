@@ -16,9 +16,12 @@
 package poller
 
 import (
+	"time"
+
 	"informo-feeder/common"
 	"informo-feeder/config"
 
+	"github.com/matrix-org/gomatrix"
 	"github.com/mmcdole/gofeed"
 	"github.com/sirupsen/logrus"
 )
@@ -31,13 +34,26 @@ func (p *Poller) sendMatrixEventFromItem(
 		return
 	}
 
-	r, err := p.mxClient.SendMessageEvent(
-		common.InformoRoomID,
-		feed.EventType,
-		content,
-	)
-	if err != nil {
-		return
+	firstIter := true
+
+	var r *gomatrix.RespSendEvent
+	for err != nil || firstIter {
+		if !firstIter {
+			is429 := isTooManyRequestsError(err)
+			if !is429 {
+				return
+			}
+
+			time.Sleep(5 * time.Second)
+		}
+
+		r, err = p.mxClient.SendMessageEvent(
+			common.InformoRoomID,
+			feed.EventType,
+			content,
+		)
+
+		firstIter = false
 	}
 
 	logrus.WithFields(logrus.Fields{

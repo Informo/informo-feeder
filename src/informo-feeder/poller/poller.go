@@ -139,3 +139,19 @@ func (p *Poller) updateLatestPosition(
 
 	return p.db.UpdatePollerStatusForFeed(feedURL, currentTs, lastItemTs)
 }
+
+func isTooManyRequestsError(err error) bool {
+	httpErr, ok := err.(gomatrix.HTTPError)
+	if !ok || httpErr.Code != http.StatusTooManyRequests {
+		if ok {
+			logrus.WithFields(logrus.Fields{
+				"code":    httpErr.Code,
+				"message": httpErr.Message,
+			}).Debug("HTTP error isn't 429 Too Many Requests")
+		}
+		return false
+	}
+
+	logrus.Debug("Got 429 Too Many Requests error")
+	return true
+}

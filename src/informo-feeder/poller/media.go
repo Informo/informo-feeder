@@ -39,8 +39,20 @@ func (p *Poller) replaceWithMatrixLink(content *string, urls []string) (err erro
 
 		var resp *gomatrix.RespMediaUpload
 		for _, url := range urls {
-			if resp, err = p.mxClient.UploadLink(url); err != nil {
-				return
+			firstIter := true
+			for err != nil || firstIter {
+				if !firstIter {
+					is429 := isTooManyRequestsError(err)
+					if !is429 {
+						return
+					}
+
+					time.Sleep(5 * time.Second)
+				}
+
+				resp, err = p.mxClient.UploadLink(url)
+
+				firstIter = false
 			}
 
 			logrus.WithFields(logrus.Fields{
@@ -49,8 +61,6 @@ func (p *Poller) replaceWithMatrixLink(content *string, urls []string) (err erro
 			}).Debug("Replacing media link in content")
 
 			replacements[url] = resp.ContentURI
-
-			time.Sleep(200 * time.Millisecond)
 		}
 
 		for origURL, mxURL := range replacements {
