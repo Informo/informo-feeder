@@ -49,7 +49,7 @@ func (p *Poller) sendMatrixEventFromItem(
 
 		r, err = p.mxClient.SendMessageEvent(
 			common.InformoRoomID,
-			feed.EventType,
+			common.InformoNewsEventTypePrefix+feed.EventType,
 			content,
 		)
 

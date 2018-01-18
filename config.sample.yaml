@@ -20,7 +20,7 @@ matrix:
 # Configuration for feeds to poll and parse, and polling interval
 feeds:
   - url: "http://www.acmenews.org/feed/"
-    event_type: "network.informo.news.acmenews"
+    event_type: "acmenews"
     poll_interval: 3600
 
 # Database to store poll status. Currently only SQLite3 databases are supported

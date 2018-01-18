@@ -16,3 +16,4 @@
 package common
 
 const InformoRoomID = "!xkMuBYHNWUOLHIoOEw:matrix.org"
+const InformoNewsEventTypePrefix = "network.informo.news."
