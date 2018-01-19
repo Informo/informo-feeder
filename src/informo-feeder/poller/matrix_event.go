@@ -16,14 +16,18 @@
 package poller
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"time"
 
 	"informo-feeder/common"
 	"informo-feeder/config"
 
 	"github.com/matrix-org/gomatrix"
+	"github.com/matrix-org/gomatrixserverlib"
 	"github.com/mmcdole/gofeed"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/ed25519"
 )
 
 func (p *Poller) sendMatrixEventFromItem(
@@ -31,6 +35,10 @@ func (p *Poller) sendMatrixEventFromItem(
 ) (err error) {
 	content, err := p.getEventContent(feedItem)
 	if err != nil {
+		return
+	}
+
+	if err = p.signEvent(&content, feed.EventType); err != nil {
 		return
 	}
 
@@ -58,7 +66,7 @@ func (p *Poller) sendMatrixEventFromItem(
 
 	logrus.WithFields(logrus.Fields{
 		"feedURL":   feed.URL,
-		"eventType": feed.EventType,
+		"eventType": common.InformoNewsEventTypePrefix + feed.EventType,
 		"eventID":   r.EventID,
 	}).Info("Event published")
 
@@ -84,6 +92,21 @@ func (p *Poller) getEventContent(
 		Link:        item.Link,
 	}
 
-	err = p.pgpEntity.SignNews(&content)
+	return
+}
+
+func (p *Poller) signEvent(content *common.NewsContent, eventType string) (err error) {
+	jsonBytes, err := json.Marshal(content)
+	if err != nil {
+		return
+	}
+
+	canonical, err := gomatrixserverlib.CanonicalJSON(jsonBytes)
+	if err != nil {
+		return
+	}
+
+	priv := p.cfg.Keys.PrivateKeys[eventType]
+	content.Signature = base64.StdEncoding.EncodeToString(ed25519.Sign(priv, canonical))
 	return
 }

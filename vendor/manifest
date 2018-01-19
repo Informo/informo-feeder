@@ -2,12 +2,6 @@
 	"version": 0,
 	"dependencies": [
 		{
-			"importpath": "github.com/Informo/goutils",
-			"repository": "https://github.com/Informo/goutils",
-			"revision": "e4783b5d2c0d199d8ebd037a7d075db527f6b8d5",
-			"branch": "master"
-		},
-		{
 			"importpath": "github.com/PuerkitoBio/goquery",
 			"repository": "https://github.com/PuerkitoBio/goquery",
 			"revision": "1a71cc719d0d5b9e4f14ae072bef08b576b0bab5",
@@ -32,6 +26,18 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/matrix-org/gomatrixserverlib",
+			"repository": "https://github.com/matrix-org/gomatrixserverlib",
+			"revision": "51152a681e69a832efcd934b60080b92bc98b286",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/matrix-org/util",
+			"repository": "https://github.com/matrix-org/util",
+			"revision": "2e2df66af2f5dcf30843b5793134a0f0ce9338c6",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/mattn/go-sqlite3",
 			"repository": "https://github.com/mattn/go-sqlite3",
 			"revision": "d5ffb5c0cca8778699a929b236766f4a7af674e8",
@@ -50,30 +56,41 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/pkg/errors",
+			"repository": "https://github.com/pkg/errors",
+			"revision": "e881fd58d78e04cf6d0de1217f8707c8cc2249bc",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/sirupsen/logrus",
 			"repository": "https://github.com/sirupsen/logrus",
 			"revision": "d682213848ed68c0a260ca37d6dd5ace8423f5ba",
 			"branch": "master"
 		},
 		{
-			"importpath": "github.com/vabd/gofeed",
-			"repository": "https://github.com/vabd/gofeed",
-			"revision": "d5a82ca36eaf0aefcb4f03d61eb8815afbd26a39",
+			"importpath": "github.com/tidwall/gjson",
+			"repository": "https://github.com/tidwall/gjson",
+			"revision": "5cd723d566400bc7ac450eb0c5b9edbb75a70750",
 			"branch": "master"
 		},
 		{
-			"importpath": "golang.org/x/crypto/cast5",
-			"repository": "https://go.googlesource.com/crypto",
-			"revision": "13931e22f9e72ea58bb73048bc752b48c6d4d4ac",
-			"branch": "master",
-			"path": "/cast5"
+			"importpath": "github.com/tidwall/match",
+			"repository": "https://github.com/tidwall/match",
+			"revision": "1731857f09b1f38450e2c12409748407822dc6be",
+			"branch": "master"
 		},
 		{
-			"importpath": "golang.org/x/crypto/openpgp",
+			"importpath": "github.com/tidwall/sjson",
+			"repository": "https://github.com/tidwall/sjson",
+			"revision": "6a22caf2fd45d5e2119bfc3717e984f15a7eb7ee",
+			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/crypto/ed25519",
 			"repository": "https://go.googlesource.com/crypto",
 			"revision": "13931e22f9e72ea58bb73048bc752b48c6d4d4ac",
 			"branch": "master",
-			"path": "/openpgp"
+			"path": "/ed25519"
 		},
 		{
 			"importpath": "golang.org/x/crypto/openpgp/armor",

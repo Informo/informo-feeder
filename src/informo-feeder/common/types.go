@@ -22,5 +22,5 @@ type NewsContent struct {
 	Date        int64  `json:"date"` // Timestamp in seconds
 	Author      string `json:"author"`
 	Link        string `json:"link"`
-	Signature   string `json:"signature"`
+	Signature   string `json:"signature,omitempty"`
 }

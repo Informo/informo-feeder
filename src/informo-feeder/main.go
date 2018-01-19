@@ -20,7 +20,6 @@ import (
 
 	"informo-feeder/config"
 	"informo-feeder/database"
-	"informo-feeder/pgp"
 	"informo-feeder/poller"
 
 	"github.com/matrix-org/gomatrix"
@@ -43,11 +42,6 @@ func main() {
 		logrus.Panic(err)
 	}
 
-	e, err := pgp.NewEntity(&cfg.PGP)
-	if err != nil {
-		logrus.Panic(err)
-	}
-
 	db, err := database.NewDatabase(cfg.Database.Path)
 	if err != nil {
 		logrus.Panic(err)
@@ -57,7 +51,7 @@ func main() {
 		cfg.Matrix.Homeserver, cfg.Matrix.MXID, cfg.Matrix.AccessToken,
 	)
 
-	p := poller.NewPoller(db, client, e)
+	p := poller.NewPoller(db, client, cfg)
 	for _, feed := range cfg.Feeds {
 		go p.StartPolling(feed)
 		logrus.WithField("feedURL", feed.URL).Info("Poller started")

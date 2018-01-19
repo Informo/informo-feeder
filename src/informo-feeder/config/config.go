@@ -39,20 +39,24 @@ type Feed struct {
 }
 
 type Config struct {
-	PGP      PGPConfig      `yaml:"pgp"`
+	Keys     KeysConfig     `yaml:"keys"`
 	Matrix   MatrixConfig   `yaml:"matrix"`
 	Feeds    []Feed         `yaml:"feeds"`
 	Database DatabaseConfig `yaml:"database"`
 }
 
-func Load(filePath string) (cfg Config, err error) {
+func Load(filePath string) (cfg *Config, err error) {
 	content, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return
 	}
 
-	err = yaml.Unmarshal(content, &cfg)
-	if err != nil {
+	cfg = new(Config)
+	if err = yaml.Unmarshal(content, cfg); err != nil {
+		return
+	}
+
+	if err = cfg.loadKeys(); err != nil {
 		return
 	}
 

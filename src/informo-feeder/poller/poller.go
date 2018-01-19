@@ -21,7 +21,6 @@ import (
 
 	"informo-feeder/config"
 	"informo-feeder/database"
-	"informo-feeder/pgp"
 
 	"github.com/matrix-org/gomatrix"
 	"github.com/mmcdole/gofeed"
@@ -29,22 +28,22 @@ import (
 )
 
 type Poller struct {
-	db        *database.Database
-	mxClient  *gomatrix.Client
-	parser    *gofeed.Parser
-	pgpEntity *pgp.Entity
+	db       *database.Database
+	mxClient *gomatrix.Client
+	parser   *gofeed.Parser
+	cfg      *config.Config
 }
 
 func NewPoller(
 	db *database.Database,
 	mxClient *gomatrix.Client,
-	pgpEntity *pgp.Entity,
+	cfg *config.Config,
 ) *Poller {
 	return &Poller{
-		db:        db,
-		mxClient:  mxClient,
-		parser:    gofeed.NewParser(),
-		pgpEntity: pgpEntity,
+		db:       db,
+		mxClient: mxClient,
+		parser:   gofeed.NewParser(),
+		cfg:      cfg,
 	}
 }
 

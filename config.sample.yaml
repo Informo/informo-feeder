@@ -1,14 +1,6 @@
-# Settings to access the PGP private key (which will be used to sign events)
-# This can also be expressed this way to access the private key as a file:
-#
-#   pgp:
-#     use_agent: false
-#     key_file: /path/to/key.asc
-#     key_passphrase: hackme
-pgp:
-  use_agent: true
-  key_id: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-  key_passphrase: hackme
+keys:
+  directory: keys
+  prefix: _key
 
 # Settings to authenticate to a Matrix homeserver in order to access the Informo
 # network
