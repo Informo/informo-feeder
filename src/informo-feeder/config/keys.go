@@ -71,7 +71,7 @@ func (c *Config) loadKeys() (err error) {
 	c.Keys.PublicKeys = make(map[string]ed25519.PublicKey)
 	c.Keys.PrivateKeys = make(map[string]ed25519.PrivateKey)
 	for _, source := range c.Feeds {
-		id := source.EventType
+		id := source.Identifier
 		c.Keys.PublicKeys[id], c.Keys.PrivateKeys[id], err = c.loadOrGenerateKeys(id)
 		if err != nil {
 			logrus.WithField(

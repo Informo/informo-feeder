@@ -38,7 +38,7 @@ func (p *Poller) sendMatrixEventFromItem(
 		return
 	}
 
-	if err = p.signEvent(&content, feed.EventType); err != nil {
+	if err = p.signEvent(&content, feed.Identifier); err != nil {
 		return
 	}
 
@@ -57,7 +57,7 @@ func (p *Poller) sendMatrixEventFromItem(
 
 		r, err = p.mxClient.SendMessageEvent(
 			common.InformoRoomID,
-			common.InformoNewsEventTypePrefix+feed.EventType,
+			common.InformoNewsEventTypePrefix+feed.Identifier,
 			content,
 		)
 
@@ -65,9 +65,9 @@ func (p *Poller) sendMatrixEventFromItem(
 	}
 
 	logrus.WithFields(logrus.Fields{
-		"feedURL":   feed.URL,
-		"eventType": common.InformoNewsEventTypePrefix + feed.EventType,
-		"eventID":   r.EventID,
+		"feedURL":    feed.URL,
+		"identifier": feed.Identifier,
+		"eventID":    r.EventID,
 	}).Info("Event published")
 
 	return nil

@@ -34,7 +34,7 @@ type DatabaseConfig struct {
 
 type Feed struct {
 	URL          string `yaml:"url"`
-	EventType    string `yaml:"event_type"`
+	Identifier   string `yaml:"identifier"`
 	PollInterval int64  `yaml:"poll_interval"`
 }
 
