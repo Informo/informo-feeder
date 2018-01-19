@@ -22,22 +22,28 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// MatrixConfig represents the Matrix settings as specified in the configuration
+// file.
 type MatrixConfig struct {
 	Homeserver  string `yaml:"homeserver"`
 	AccessToken string `yaml:"access_token"`
 	MXID        string `yaml:"mxid"`
 }
 
+// DatabaseConfig represents the database settings as specified in the
+// configuration file.
 type DatabaseConfig struct {
 	Path string `yaml:"path,omitempty"`
 }
 
+// Feed represents a feed that the Informo feeder will poll at a given frequency.
 type Feed struct {
 	URL          string `yaml:"url"`
 	Identifier   string `yaml:"identifier"`
 	PollInterval int64  `yaml:"poll_interval"`
 }
 
+// Config represents the top-level configuration structure for the Informo feeder.
 type Config struct {
 	Keys     KeysConfig     `yaml:"keys"`
 	Matrix   MatrixConfig   `yaml:"matrix"`
@@ -45,6 +51,11 @@ type Config struct {
 	Database DatabaseConfig `yaml:"database"`
 }
 
+// Load creates a new instance of the Config structure, marshal the content from
+// the configuration file into it, and loads the pair of signing keys into it.
+// It then returns a reference to the Config instance.
+// Returns an error if there was an issue opening the configuration file, parsing
+// it or loading the keys.
 func Load(filePath string) (cfg *Config, err error) {
 	content, err := ioutil.ReadFile(filePath)
 	if err != nil {

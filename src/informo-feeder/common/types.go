@@ -15,6 +15,9 @@
 
 package common
 
+// NewsContent represents the content of the news Matrix event sent to the
+// Informo network. We set the signature to omitempty so we don't have an empty
+// "signature" property when singing the JSON generated from the content.
 type NewsContent struct {
 	Headline    string `json:"headline"`
 	Content     string `json:"content"`
