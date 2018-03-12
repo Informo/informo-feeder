@@ -29,7 +29,7 @@ func (f utcFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 }
 
 func logConfig() error {
-	if *debug {
+	if *debug || *feedTest {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 

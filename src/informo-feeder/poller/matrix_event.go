@@ -61,6 +61,12 @@ func (p *Poller) sendMatrixEventFromItem(
 				common.InformoNewsEventTypePrefix+feed.Identifier,
 				content,
 			)
+		} else {
+			logrus.WithFields(logrus.Fields{
+				"feedURL":    feed.URL,
+				"identifier": feed.Identifier,
+				"eventID":    r.EventID,
+			}).Debug("Feed test mode enabled, not sending any actual event")
 		}
 
 		firstIter = false
