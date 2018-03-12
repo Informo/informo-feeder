@@ -55,11 +55,13 @@ func (p *Poller) sendMatrixEventFromItem(
 			time.Sleep(5 * time.Second)
 		}
 
-		r, err = p.mxClient.SendMessageEvent(
-			common.InformoRoomID,
-			common.InformoNewsEventTypePrefix+feed.Identifier,
-			content,
-		)
+		if !p.testMode {
+			r, err = p.mxClient.SendMessageEvent(
+				common.InformoRoomID,
+				common.InformoNewsEventTypePrefix+feed.Identifier,
+				content,
+			)
+		}
 
 		firstIter = false
 	}

@@ -30,6 +30,7 @@ import (
 var (
 	configFile = flag.String("config", "config.yaml", "Configuration file")
 	debug      = flag.Bool("debug", false, "Print debugging messages")
+	feedTest   = flag.Bool("feed-test", false, "Test feed parsing and event generation without sending any actual Matrix event")
 )
 
 func main() {
@@ -50,8 +51,11 @@ func main() {
 	client, err := gomatrix.NewClient(
 		cfg.Matrix.Homeserver, cfg.Matrix.MXID, cfg.Matrix.AccessToken,
 	)
+	if err != nil {
+		logrus.Panic(err)
+	}
 
-	p := poller.NewPoller(db, client, cfg)
+	p := poller.NewPoller(db, client, cfg, *feedTest)
 	for _, feed := range cfg.Feeds {
 		go p.StartPolling(feed)
 		logrus.WithField("feedURL", feed.URL).Info("Poller started")

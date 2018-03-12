@@ -32,18 +32,21 @@ type Poller struct {
 	mxClient *gomatrix.Client
 	parser   *gofeed.Parser
 	cfg      *config.Config
+	testMode bool
 }
 
 func NewPoller(
 	db *database.Database,
 	mxClient *gomatrix.Client,
 	cfg *config.Config,
+	testMode bool,
 ) *Poller {
 	return &Poller{
 		db:       db,
 		mxClient: mxClient,
 		parser:   gofeed.NewParser(),
 		cfg:      cfg,
+		testMode: testMode,
 	}
 }
 
