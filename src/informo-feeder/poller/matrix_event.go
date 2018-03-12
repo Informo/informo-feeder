@@ -65,18 +65,19 @@ func (p *Poller) sendMatrixEventFromItem(
 			logrus.WithFields(logrus.Fields{
 				"feedURL":    feed.URL,
 				"identifier": feed.Identifier,
-				"eventID":    r.EventID,
 			}).Debug("Feed test mode enabled, not sending any actual event")
 		}
 
 		firstIter = false
 	}
 
-	logrus.WithFields(logrus.Fields{
-		"feedURL":    feed.URL,
-		"identifier": feed.Identifier,
-		"eventID":    r.EventID,
-	}).Info("Event published")
+	if !p.testMode {
+		logrus.WithFields(logrus.Fields{
+			"feedURL":    feed.URL,
+			"identifier": feed.Identifier,
+			"eventID":    r.EventID,
+		}).Info("Event published")
+	}
 
 	return nil
 }
