@@ -17,6 +17,7 @@ package poller
 
 import (
 	"net/http"
+	"regexp"
 	"time"
 
 	"informo-feeder/config"
@@ -51,6 +52,8 @@ func NewPoller(
 }
 
 func (p *Poller) StartPolling(feed config.Feed) {
+	htmlRegexp := regexp.MustCompile("</[^ ]+>")
+
 	for {
 		timeToSleep, err := p.getDurationBeforePoll(feed)
 		if err != nil {
@@ -82,17 +85,33 @@ func (p *Poller) StartPolling(feed config.Feed) {
 
 		for i := len(f.Items) - 1; i >= 0; i-- {
 			item := f.Items[i]
-			if len(item.Content) > 0 && item.PublishedParsed.After(latestItemTime) {
+			if item.PublishedParsed.After(latestItemTime) {
+				var content string
+				if len(item.Content) > 0 {
+					content = item.Content
+				} else if len(item.Description) > 0 {
+					if htmlRegexp.MatchString(item.Description) {
+						content = item.Description
+					} else {
+						logrus.WithFields(logrus.Fields{
+							"title":         item.Title,
+							"publishedDate": item.PublishedParsed.String(),
+						}).Warn("Could not find any HTML content")
+
+						continue
+					}
+				}
+
 				logrus.WithFields(logrus.Fields{
 					"title":         item.Title,
 					"publishedDate": item.PublishedParsed.String(),
 				}).Info("Got a new item")
 
-				if err = p.replaceMedias(&(item.Content)); err != nil {
+				if err = p.replaceMedias(&content); err != nil {
 					logrus.Panic(err)
 				}
 
-				if err = p.sendMatrixEventFromItem(feed, item); err != nil {
+				if err = p.sendMatrixEventFromItem(feed, content, item); err != nil {
 					logrus.Panic(err)
 				}
 			}

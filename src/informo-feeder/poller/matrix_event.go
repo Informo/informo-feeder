@@ -31,9 +31,9 @@ import (
 )
 
 func (p *Poller) sendMatrixEventFromItem(
-	feed config.Feed, feedItem *gofeed.Item,
+	feed config.Feed, itemContent string, feedItem *gofeed.Item,
 ) (err error) {
-	content, err := p.getEventContent(feedItem)
+	content, err := p.getEventContent(feedItem, itemContent)
 	if err != nil {
 		return
 	}
@@ -65,6 +65,7 @@ func (p *Poller) sendMatrixEventFromItem(
 			logrus.WithFields(logrus.Fields{
 				"feedURL":    feed.URL,
 				"identifier": feed.Identifier,
+				"content":    content.Content[:80],
 			}).Debug("Feed test mode enabled, not sending any actual event")
 		}
 
@@ -83,7 +84,7 @@ func (p *Poller) sendMatrixEventFromItem(
 }
 
 func (p *Poller) getEventContent(
-	item *gofeed.Item,
+	item *gofeed.Item, itemContent string,
 ) (content common.NewsContent, err error) {
 	var authorName string
 	if item.Author == nil {
@@ -94,7 +95,7 @@ func (p *Poller) getEventContent(
 
 	content = common.NewsContent{
 		Headline:    item.Title,
-		Content:     item.Content,
+		Content:     itemContent,
 		Description: item.Description,
 		Date:        item.PublishedParsed.Unix(),
 		Author:      authorName,
