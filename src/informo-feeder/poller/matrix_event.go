@@ -33,6 +33,9 @@ import (
 func (p *Poller) sendMatrixEventFromItem(
 	feed config.Feed, itemContent string, feedItem *gofeed.Item,
 ) (err error) {
+	var extract string
+	var extractMaxLength = 80
+
 	content, err := p.getEventContent(feedItem, itemContent)
 	if err != nil {
 		return
@@ -62,10 +65,16 @@ func (p *Poller) sendMatrixEventFromItem(
 				content,
 			)
 		} else {
+			if len(content.Content) > extractMaxLength {
+				extract = content.Content[:extractMaxLength]
+			} else {
+				extract = content.Content
+			}
+
 			logrus.WithFields(logrus.Fields{
 				"feedURL":    feed.URL,
 				"identifier": feed.Identifier,
-				"content":    content.Content[:80],
+				"content":    extract,
 			}).Debug("Feed test mode enabled, not sending any actual event")
 		}
 
