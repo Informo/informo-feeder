@@ -20,27 +20,32 @@ import (
 )
 
 const pollerSchema = `
--- Store poller status
+-- Store the result from the latest poll for a given feed. One row equals to one
+-- item.
 CREATE TABLE IF NOT EXISTS poller (
-	feed_url TEXT NOT NULL PRIMARY KEY,
-	-- The latest poll time (as a timestamp in seconds)
-	latest_poll_ts INTEGER NOT NULL DEFAULT 0,
-	-- The timestamp (in seconds) of the latest item retrieved
-	latest_item_ts INTEGER NOT NULL DEFAULT 0
+	-- The identifier of the feed the item comes from.
+	feed TEXT NOT NULL,
+	-- The URL of the item.
+	item_url TEXT NOT NULL,
 );
 `
 
-const insertOrUpdatePollerStatusSQL = `
-	INSERT OR REPLACE INTO poller (feed_url, latest_poll_ts, latest_item_ts)
-	VALUES ($1, $2, $3)
+const selectItemsURLsForFeedSQL = `
+	SELECT item_url FROM poller WHERE feed = $1
 `
 
-const selectLatestPollerStatusForFeedSQL = "" +
-	"SELECT latest_poll_ts, latest_item_ts FROM poller WHERE feed_url = $1"
+const insertItemForFeedSQL = `
+	INSERT INTO poller (feed, item_url) VALUES ($1, $2)
+`
+
+const deleteItemsForFeedSQL = `
+	DELETE FROM poller WHERE feed = $1
+`
 
 type pollerStatements struct {
-	insertOrUpdatePollerStatusStmt      *sql.Stmt
-	selectLatestPollerStatusForFeedStmt *sql.Stmt
+	selectItemsURLsForFeedStmt *sql.Stmt
+	insertItemForFeedStmt      *sql.Stmt
+	deleteItemsForFeedStmt     *sql.Stmt
 }
 
 func (p *pollerStatements) prepare(db *sql.DB) (err error) {
@@ -48,30 +53,46 @@ func (p *pollerStatements) prepare(db *sql.DB) (err error) {
 	if err != nil {
 		return
 	}
-	if p.insertOrUpdatePollerStatusStmt, err = db.Prepare(insertOrUpdatePollerStatusSQL); err != nil {
+	if p.selectItemsURLsForFeedStmt, err = db.Prepare(selectItemsURLsForFeedSQL); err != nil {
 		return
 	}
-	if p.selectLatestPollerStatusForFeedStmt, err = db.Prepare(selectLatestPollerStatusForFeedSQL); err != nil {
+	if p.insertItemForFeedStmt, err = db.Prepare(insertItemForFeedSQL); err != nil {
+		return
+	}
+	if p.deleteItemsForFeedStmt, err = db.Prepare(deleteItemsForFeedSQL); err != nil {
 		return
 	}
 	return
 }
 
-func (p *pollerStatements) insertOrUpdatePollerStatus(
-	feedURL string, latestPoll int64, latestItemTs int64,
-) (err error) {
-	_, err = p.insertOrUpdatePollerStatusStmt.Exec(feedURL, latestPoll, latestItemTs)
+func (p *pollerStatements) selectItemsURLsForFeed(feed string) (urls []string, err error) {
+	urls = make([]string, 0)
+
+	rows, err := p.selectItemsURLsForFeedStmt.Query(feed)
+	if err != nil {
+		return
+	}
+
+	var u string
+	for rows.Next() {
+		if err = rows.Scan(&u); err != nil {
+			return
+		}
+
+		urls = append(urls, u)
+	}
+
 	return
 }
 
-func (p *pollerStatements) selectLatestPollerStatusForFeed(
-	feedURL string,
-) (latestPoll int64, latestItemTs int64, err error) {
-	err = p.selectLatestPollerStatusForFeedStmt.QueryRow(feedURL).Scan(&latestPoll, &latestItemTs)
+func (p *pollerStatements) insertItemForFeed(feed string, itemURL string) (err error) {
+	_, err = p.insertItemForFeedStmt.Exec(feed, itemURL)
 
-	if err == sql.ErrNoRows {
-		return 0, 0, nil
-	}
+	return
+}
+
+func (p *pollerStatements) deleteItemsForFeed(feed string) (err error) {
+	_, err = p.deleteItemsForFeedStmt.Exec(feed)
 
 	return
 }
