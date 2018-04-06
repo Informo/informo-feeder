@@ -16,6 +16,7 @@
 package poller
 
 import (
+	"errors"
 	"net/http"
 	"regexp"
 	"time"
@@ -26,6 +27,11 @@ import (
 	"github.com/matrix-org/gomatrix"
 	"github.com/mmcdole/gofeed"
 	"github.com/sirupsen/logrus"
+)
+
+var (
+	errNoHTML  = errors.New("Could not find any HTML content")
+	htmlRegexp = regexp.MustCompile("</[^ ]+>")
 )
 
 type Poller struct {
@@ -55,15 +61,19 @@ func NewPoller(
 
 func (p *Poller) StartPolling(feed config.Feed) {
 	var err error
-	htmlRegexp := regexp.MustCompile("</[^ ]+>")
 
 	for {
-		logrus.WithField("feedURL", feed.URL).Info("Polling")
-
 		p.lastPollResults[feed.Identifier], err = p.db.GetItemsURLsForFeed(feed.Identifier)
 		if err != nil {
 			logrus.Panic(err)
 		}
+
+		logrus.WithFields(logrus.Fields{
+			"feed":  feed.Identifier,
+			"items": len(p.lastPollResults[feed.Identifier]),
+		}).Debug("Loaded last poll's results")
+
+		logrus.WithField("feedURL", feed.URL).Info("Polling")
 
 		resp, err := http.Get(feed.URL)
 		if err != nil {
@@ -79,35 +89,23 @@ func (p *Poller) StartPolling(feed config.Feed) {
 			logrus.Panic(err)
 		}
 
+		logrus.WithFields(logrus.Fields{
+			"feed":  feed.Identifier,
+			"items": len(f.Items),
+		}).Debug("Fetched feed")
+
 		for i := len(f.Items) - 1; i >= 0; i-- {
 			item := f.Items[i]
 			if !p.itemKnown(feed.Identifier, item.Link) {
-				var content string
-				if len(item.Content) > 0 {
-					content = item.Content
-				} else if len(item.Description) > 0 {
-					if htmlRegexp.MatchString(item.Description) {
-						content = item.Description
-					} else {
-						logrus.WithFields(logrus.Fields{
-							"title":         item.Title,
-							"publishedDate": item.PublishedParsed.String(),
-						}).Warn("Could not find any HTML content")
+				if err = p.prepareThenSend(feed, item); err == errNoHTML {
+					logrus.WithFields(logrus.Fields{
+						"feed":          feed.Identifier,
+						"title":         item.Title,
+						"publishedDate": item.PublishedParsed.String(),
+					}).Warn("Could not find any HTML content")
 
-						continue
-					}
-				}
-
-				logrus.WithFields(logrus.Fields{
-					"title":         item.Title,
-					"publishedDate": item.PublishedParsed.String(),
-				}).Info("Got a new item")
-
-				if err = p.replaceMedias(&content); err != nil {
-					logrus.Panic(err)
-				}
-
-				if err = p.sendMatrixEventFromItem(feed, content, item); err != nil {
+					continue
+				} else if err != nil {
 					logrus.Panic(err)
 				}
 			}
@@ -130,6 +128,31 @@ func (p *Poller) StartPolling(feed config.Feed) {
 
 		time.Sleep(time.Duration(feed.PollInterval) * time.Second)
 	}
+}
+
+func (p *Poller) prepareThenSend(feed config.Feed, item *gofeed.Item) error {
+	var content string
+
+	if len(item.Content) > 0 {
+		content = item.Content
+	} else if len(item.Description) > 0 {
+		if htmlRegexp.MatchString(item.Description) {
+			content = item.Description
+		} else {
+			return errNoHTML
+		}
+	}
+
+	logrus.WithFields(logrus.Fields{
+		"title":         item.Title,
+		"publishedDate": item.PublishedParsed.String(),
+	}).Info("Got a new item")
+
+	if err := p.replaceMedias(&content); err != nil {
+		return err
+	}
+
+	return p.sendMatrixEventFromItem(feed, content, item)
 }
 
 func (p *Poller) itemKnown(feedIdentifier string, itemURL string) (known bool) {
