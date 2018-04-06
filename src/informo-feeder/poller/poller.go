@@ -55,13 +55,6 @@ func (p *Poller) StartPolling(feed config.Feed) {
 	htmlRegexp := regexp.MustCompile("</[^ ]+>")
 
 	for {
-		timeToSleep, err := p.getDurationBeforePoll(feed)
-		if err != nil {
-			logrus.Panic(err)
-		}
-
-		time.Sleep(timeToSleep * time.Second)
-
 		logrus.WithField("feedURL", feed.URL).Info("Polling")
 
 		_, latestItemTime, err := p.getLatestPosition(feed.URL)
@@ -119,6 +112,8 @@ func (p *Poller) StartPolling(feed config.Feed) {
 
 			time.Sleep(500 * time.Millisecond)
 		}
+
+		time.Sleep(time.Duration(feed.PollInterval) * time.Second)
 	}
 }
 
