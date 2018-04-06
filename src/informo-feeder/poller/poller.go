@@ -29,11 +29,12 @@ import (
 )
 
 type Poller struct {
-	db       *database.Database
-	mxClient *gomatrix.Client
-	parser   *gofeed.Parser
-	cfg      *config.Config
-	testMode bool
+	db              *database.Database
+	mxClient        *gomatrix.Client
+	parser          *gofeed.Parser
+	cfg             *config.Config
+	testMode        bool
+	lastPollResults map[string][]string
 }
 
 func NewPoller(
@@ -43,21 +44,23 @@ func NewPoller(
 	testMode bool,
 ) *Poller {
 	return &Poller{
-		db:       db,
-		mxClient: mxClient,
-		parser:   gofeed.NewParser(),
-		cfg:      cfg,
-		testMode: testMode,
+		db:              db,
+		mxClient:        mxClient,
+		parser:          gofeed.NewParser(),
+		cfg:             cfg,
+		testMode:        testMode,
+		lastPollResults: make(map[string][]string),
 	}
 }
 
 func (p *Poller) StartPolling(feed config.Feed) {
+	var err error
 	htmlRegexp := regexp.MustCompile("</[^ ]+>")
 
 	for {
 		logrus.WithField("feedURL", feed.URL).Info("Polling")
 
-		_, latestItemTime, err := p.getLatestPosition(feed.URL)
+		p.lastPollResults[feed.Identifier], err = p.db.GetItemsURLsForFeed(feed.Identifier)
 		if err != nil {
 			logrus.Panic(err)
 		}
@@ -78,7 +81,7 @@ func (p *Poller) StartPolling(feed config.Feed) {
 
 		for i := len(f.Items) - 1; i >= 0; i-- {
 			item := f.Items[i]
-			if item.PublishedParsed.After(latestItemTime) {
+			if !p.itemKnown(feed.Identifier, item.Link) {
 				var content string
 				if len(item.Content) > 0 {
 					content = item.Content
@@ -108,52 +111,35 @@ func (p *Poller) StartPolling(feed config.Feed) {
 					logrus.Panic(err)
 				}
 			}
-			p.updateLatestPosition(feed.URL, item)
 
 			time.Sleep(500 * time.Millisecond)
+		}
+
+		// Perform the clear + refill here, this way we don't risk the feeder being
+		// interupted while sending events and restarting with an empty DB for the
+		// feed.
+		if err = p.db.ClearItemsForFeed(feed.Identifier); err != nil {
+			logrus.Panic(err)
+		}
+
+		for _, item := range f.Items {
+			if err = p.db.SaveItem(feed.Identifier, item.Link); err != nil {
+				panic(err)
+			}
 		}
 
 		time.Sleep(time.Duration(feed.PollInterval) * time.Second)
 	}
 }
 
-func (p *Poller) getDurationBeforePoll(feed config.Feed) (timeToPoll time.Duration, err error) {
-	latestPoll, _, err := p.getLatestPosition(feed.URL)
-	if err != nil {
-		return
-	}
-
-	delta := time.Now().Unix() - latestPoll.Unix()
-
-	timeToPoll = time.Duration(feed.PollInterval - delta)
-
-	if timeToPoll < 0 {
-		timeToPoll = 0
+func (p *Poller) itemKnown(feedIdentifier string, itemURL string) (known bool) {
+	for _, url := range p.lastPollResults[feedIdentifier] {
+		if url == itemURL {
+			known = true
+		}
 	}
 
 	return
-}
-
-func (p *Poller) getLatestPosition(
-	feedURL string,
-) (latestPoll time.Time, latestItem time.Time, err error) {
-	lp, li, err := p.db.GetPollerStatusForFeed(feedURL)
-	if err != nil {
-		return
-	}
-
-	latestPoll = time.Unix(lp, 0)
-	latestItem = time.Unix(li, 0)
-	return
-}
-
-func (p *Poller) updateLatestPosition(
-	feedURL string, lastItem *gofeed.Item,
-) (err error) {
-	lastItemTs := lastItem.PublishedParsed.Unix()
-	currentTs := time.Now().Unix()
-
-	return p.db.UpdatePollerStatusForFeed(feedURL, currentTs, lastItemTs)
 }
 
 func isTooManyRequestsError(err error) bool {
