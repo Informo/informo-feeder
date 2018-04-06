@@ -17,7 +17,7 @@ package database
 
 import (
 	"database/sql"
-	"url"
+	"net/url"
 
 	// Database driver.
 	// TODO: Chose the driver from the configuration file.
