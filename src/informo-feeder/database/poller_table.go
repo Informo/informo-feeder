@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS poller (
 	-- The identifier of the feed the item comes from.
 	feed TEXT NOT NULL,
 	-- The URL of the item.
-	item_url TEXT NOT NULL,
+	item_url TEXT NOT NULL
 );
 `
 
