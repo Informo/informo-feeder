@@ -54,8 +54,6 @@ func (p *Poller) sendMatrixEventFromItem(
 			if !is429 {
 				return
 			}
-
-			time.Sleep(5 * time.Second)
 		}
 
 		if !p.testMode {

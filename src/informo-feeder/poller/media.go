@@ -46,8 +46,6 @@ func (p *Poller) replaceWithMatrixLink(content *string, urls []string) (err erro
 					if !is429 {
 						return
 					}
-
-					time.Sleep(5 * time.Second)
 				}
 
 				resp, err = p.mxClient.UploadLink(url)

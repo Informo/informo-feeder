@@ -141,10 +141,6 @@ func (p *Poller) StartPolling(feed config.Feed) {
 				if err = p.db.SaveItem(feed.Identifier, item.Link); err != nil {
 					logrus.Panic(err)
 				}
-
-				// Wait between sending two events in order not to get rate
-				// limited.
-				time.Sleep(500 * time.Millisecond)
 			}
 		}
 
@@ -207,5 +203,6 @@ func isTooManyRequestsError(err error) bool {
 	}
 
 	logrus.Debug("Got 429 Too Many Requests error")
+	time.Sleep(500 * time.Millisecond)
 	return true
 }
