@@ -17,15 +17,20 @@ package database
 
 import (
 	"database/sql"
+	"net/url"
 
+	// Database driver.
+	// TODO: Chose the driver from the configuration file.
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// Database contains a representation of the database as it is used by the feeder.
 type Database struct {
 	db     *sql.DB
 	poller pollerStatements
 }
 
+// NewDatabase returns a new instance of the Database structure.
 func NewDatabase(dbPath string) (*Database, error) {
 	var db *sql.DB
 	var err error
@@ -40,14 +45,28 @@ func NewDatabase(dbPath string) (*Database, error) {
 	return &Database{db, poller}, nil
 }
 
-func (d *Database) UpdatePollerStatusForFeed(
-	feedURL string, latestPoll int64, latestItemTs int64,
-) error {
-	return d.poller.insertOrUpdatePollerStatus(feedURL, latestPoll, latestItemTs)
+// GetItemsURLsForFeed returns a slice containing the URL of each item retrieved
+// the last time the poller polled a given feed.
+// Returns an error if the retrieval went wrong.
+func (d *Database) GetItemsURLsForFeed(feedIdentifier string) (map[string]bool, error) {
+	return d.poller.selectItemsURLsForFeed(feedIdentifier)
 }
 
-func (d *Database) GetPollerStatusForFeed(
-	feedURL string,
-) (latestPoll int64, latestItemTs int64, err error) {
-	return d.poller.selectLatestPollerStatusForFeed(feedURL)
+// SaveItem saves the URL of an item in the database, associated with the feed
+// if was retrieved from.
+// Returns an error if the insertion went wrong.
+func (d *Database) SaveItem(feedIdentifier string, itemURL string) error {
+	// Check if the provided URL is valid.
+	if _, err := url.Parse(itemURL); err != nil {
+		return err
+	}
+
+	return d.poller.insertItemForFeed(feedIdentifier, itemURL)
+}
+
+// ClearItemsForFeed removes all items from the database associated with a given
+// feed.
+// Returns an error if the deletion went wrong.
+func (d *Database) ClearItemsForFeed(feedIdentifier string) error {
+	return d.poller.deleteItemsForFeed(feedIdentifier)
 }

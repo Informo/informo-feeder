@@ -18,7 +18,6 @@ package poller
 import (
 	"encoding/base64"
 	"encoding/json"
-	"time"
 
 	"informo-feeder/common"
 	"informo-feeder/config"
@@ -54,8 +53,8 @@ func (p *Poller) sendMatrixEventFromItem(
 			if !is429 {
 				return
 			}
-
-			time.Sleep(5 * time.Second)
+			// Wait if the error was "429 Too Many Requests"
+			time.Sleep(500 * time.Millisecond)
 		}
 
 		if !p.testMode {

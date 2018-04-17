@@ -19,7 +19,6 @@ import (
 	"mime"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/matrix-org/gomatrix"
 	"github.com/sirupsen/logrus"
@@ -47,7 +46,8 @@ func (p *Poller) replaceWithMatrixLink(content *string, urls []string) (err erro
 						return
 					}
 
-					time.Sleep(5 * time.Second)
+					// Wait if the error was "429 Too Many Requests"
+					time.Sleep(500 * time.Millisecond)
 				}
 
 				resp, err = p.mxClient.UploadLink(url)
