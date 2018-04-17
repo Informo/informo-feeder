@@ -22,7 +22,7 @@ import (
 const pollerSchema = `
 -- Store the result from the latest poll for a given feed. One row equals to one
 -- item.
-CREATE TABLE IF NOT EXISTS poller (
+CREATE TABLE IF NOT EXISTS poller_items (
 	-- The identifier of the feed the item comes from.
 	feed TEXT NOT NULL,
 	-- The URL of the item.
