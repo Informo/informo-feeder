@@ -53,6 +53,8 @@ func (p *Poller) sendMatrixEventFromItem(
 			if !is429 {
 				return
 			}
+			// Wait if the error was "429 Too Many Requests"
+			time.Sleep(500 * time.Millisecond)
 		}
 
 		if !p.testMode {

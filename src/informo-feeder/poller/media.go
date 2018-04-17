@@ -45,6 +45,9 @@ func (p *Poller) replaceWithMatrixLink(content *string, urls []string) (err erro
 					if !is429 {
 						return
 					}
+
+					// Wait if the error was "429 Too Many Requests"
+					time.Sleep(500 * time.Millisecond)
 				}
 
 				resp, err = p.mxClient.UploadLink(url)

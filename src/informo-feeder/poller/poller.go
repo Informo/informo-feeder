@@ -203,6 +203,5 @@ func isTooManyRequestsError(err error) bool {
 	}
 
 	logrus.Debug("Got 429 Too Many Requests error")
-	time.Sleep(500 * time.Millisecond)
 	return true
 }
