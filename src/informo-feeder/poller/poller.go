@@ -137,24 +137,14 @@ func (p *Poller) StartPolling(feed config.Feed) {
 					logrus.Panic(err)
 				}
 
+				// Save the new item to the database.
+				if err = p.db.SaveItem(feed.Identifier, item.Link); err != nil {
+					logrus.Panic(err)
+				}
+
 				// Wait between sending two events in order not to get rate
 				// limited.
 				time.Sleep(500 * time.Millisecond)
-			}
-
-		}
-
-		// Perform the clear + refill here, this way we don't risk the feeder being
-		// interupted while sending events and restarting with an empty DB for the
-		// feed.
-		if err = p.db.ClearItemsForFeed(feed.Identifier); err != nil {
-			logrus.Panic(err)
-		}
-
-		// Save all items retrieved in this iteration.
-		for _, item := range f.Items {
-			if err = p.db.SaveItem(feed.Identifier, item.Link); err != nil {
-				panic(err)
 			}
 		}
 
