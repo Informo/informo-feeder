@@ -48,7 +48,7 @@ func NewDatabase(dbPath string) (*Database, error) {
 // GetItemsURLsForFeed returns a slice containing the URL of each item retrieved
 // the last time the poller polled a given feed.
 // Returns an error if the retrieval went wrong.
-func (d *Database) GetItemsURLsForFeed(feedIdentifier string) ([]string, error) {
+func (d *Database) GetItemsURLsForFeed(feedIdentifier string) (map[string]bool, error) {
 	return d.poller.selectItemsURLsForFeed(feedIdentifier)
 }
 

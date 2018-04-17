@@ -37,12 +37,11 @@ var (
 // Poller describes the overall poller in charge of polling feeds, parsing them
 // and sending new events to Matrix.
 type Poller struct {
-	db              *database.Database
-	mxClient        *gomatrix.Client
-	parser          *gofeed.Parser
-	cfg             *config.Config
-	testMode        bool
-	lastPollResults map[string][]string
+	db       *database.Database
+	mxClient *gomatrix.Client
+	parser   *gofeed.Parser
+	cfg      *config.Config
+	testMode bool
 }
 
 // NewPoller instantiates a new Poller.
@@ -53,12 +52,11 @@ func NewPoller(
 	testMode bool,
 ) *Poller {
 	return &Poller{
-		db:              db,
-		mxClient:        mxClient,
-		parser:          gofeed.NewParser(),
-		cfg:             cfg,
-		testMode:        testMode,
-		lastPollResults: make(map[string][]string),
+		db:       db,
+		mxClient: mxClient,
+		parser:   gofeed.NewParser(),
+		cfg:      cfg,
+		testMode: testMode,
 	}
 }
 
@@ -72,17 +70,19 @@ func NewPoller(
 // If a fatal error is encountered, it panics rather than returning an error.
 func (p *Poller) StartPolling(feed config.Feed) {
 	var err error
+	var lastPollResults map[string]bool
+	var itemIsKnown bool
 
 	for {
 		// Load the last poll's results.
-		p.lastPollResults[feed.Identifier], err = p.db.GetItemsURLsForFeed(feed.Identifier)
+		lastPollResults, err = p.db.GetItemsURLsForFeed(feed.Identifier)
 		if err != nil {
 			logrus.Panic(err)
 		}
 
 		logrus.WithFields(logrus.Fields{
 			"feed":  feed.Identifier,
-			"items": len(p.lastPollResults[feed.Identifier]),
+			"items": len(lastPollResults),
 		}).Debug("Loaded last poll's results")
 
 		logrus.WithField("feedURL", feed.URL).Info("Polling")
@@ -119,8 +119,10 @@ func (p *Poller) StartPolling(feed config.Feed) {
 		// but we try to.
 		for i := len(f.Items) - 1; i >= 0; i-- {
 			item := f.Items[i]
+			// If the URL isn't part of the map, itemIsKnown will equal false.
+			_, itemIsKnown = lastPollResults[item.Link]
 			// Only send the event if it wasn't part of the previous iteration.
-			if !p.itemKnown(feed.Identifier, item.Link) {
+			if !itemIsKnown {
 				// Not findind any HTML in an item isn't a fatal error, log it
 				// and jump to the next iteration (after waiting enough).
 				if err = p.prepareThenSend(feed, item); err == errNoHTML {
@@ -193,18 +195,6 @@ func (p *Poller) prepareThenSend(feed config.Feed, item *gofeed.Item) error {
 
 	// Create and send a Matrix event for this item.
 	return p.sendMatrixEventFromItem(feed, content, item)
-}
-
-// itemKnown checks whether an item with a given URL was found in the last poll's
-// results for a given feed.
-func (p *Poller) itemKnown(feedIdentifier string, itemURL string) (known bool) {
-	for _, url := range p.lastPollResults[feedIdentifier] {
-		if url == itemURL {
-			known = true
-		}
-	}
-
-	return
 }
 
 // isTooManyRequestsError checks if the given error is a rate limit error sent by

@@ -65,8 +65,8 @@ func (p *pollerStatements) prepare(db *sql.DB) (err error) {
 	return
 }
 
-func (p *pollerStatements) selectItemsURLsForFeed(feed string) (urls []string, err error) {
-	urls = make([]string, 0)
+func (p *pollerStatements) selectItemsURLsForFeed(feed string) (urls map[string]bool, err error) {
+	urls = make(map[string]bool, 0)
 
 	rows, err := p.selectItemsURLsForFeedStmt.Query(feed)
 	if err != nil {
@@ -79,7 +79,7 @@ func (p *pollerStatements) selectItemsURLsForFeed(feed string) (urls []string, e
 			return
 		}
 
-		urls = append(urls, u)
+		urls[u] = true
 	}
 
 	return
