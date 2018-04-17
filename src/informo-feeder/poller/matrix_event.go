@@ -18,7 +18,6 @@ package poller
 import (
 	"encoding/base64"
 	"encoding/json"
-	"time"
 
 	"informo-feeder/common"
 	"informo-feeder/config"
