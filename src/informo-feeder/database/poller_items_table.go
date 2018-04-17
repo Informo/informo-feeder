@@ -79,6 +79,7 @@ func (p *pollerStatements) selectItemsURLsForFeed(feed string) (urls map[string]
 			return
 		}
 
+		// Value does not matter, we only check for existence
 		urls[u] = true
 	}
 
