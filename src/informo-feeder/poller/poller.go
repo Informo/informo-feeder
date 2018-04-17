@@ -130,8 +130,6 @@ func (p *Poller) StartPolling(feed config.Feed) {
 						"publishedDate": item.PublishedParsed.String(),
 					}).Warn("Could not find any HTML content")
 
-					time.Sleep(time.Duration(feed.PollInterval) * time.Second)
-
 					continue
 				} else if err != nil {
 					logrus.Panic(err)
