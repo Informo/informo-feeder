@@ -19,6 +19,7 @@ import (
 	"mime"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/matrix-org/gomatrix"
 	"github.com/sirupsen/logrus"

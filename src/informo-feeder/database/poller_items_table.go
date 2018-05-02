@@ -31,15 +31,15 @@ CREATE TABLE IF NOT EXISTS poller_items (
 `
 
 const selectItemsURLsForFeedSQL = `
-	SELECT item_url FROM poller WHERE feed = $1
+	SELECT item_url FROM poller_items WHERE feed = $1
 `
 
 const insertItemForFeedSQL = `
-	INSERT INTO poller (feed, item_url) VALUES ($1, $2)
+	INSERT INTO poller_items (feed, item_url) VALUES ($1, $2)
 `
 
 const deleteItemsForFeedSQL = `
-	DELETE FROM poller WHERE feed = $1
+	DELETE FROM poller_items WHERE feed = $1
 `
 
 type pollerStatements struct {
