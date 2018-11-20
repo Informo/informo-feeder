@@ -34,37 +34,7 @@ The Informo feeder needs a configuration file to run. If not provided in the com
 informo-feeder --config /path/to/config.yaml
 ```
 
-The configuration file should look as follow:
-
-```yaml
-matrix:
-  homeserver: https://matrix.org
-  access_token: ACCESS_TOKEN
-  mxid: @acmenews:matrix.org
-
-feeds:
-  - url: "http://www.acmenews.org/feed/"
-    event_type: "network.informo.news.acmenews"
-    poll_interval: 3600
-
-database:
-  path: ./informo-feeder.db
-```
-
-The configuration file is made of three parts:
-
-* The `matrix` part contains all the necessary parameters to connect to the Informo node (which is a Matrix homeserver) used to send news articles to the network:
-    + The `homeserver` is the address at which the node can be reached (with the protocol part).
-    + The `access_token` is the Matrix access token to use when sending events.
-    + The `mxid` is the Matrix ID to use to publish events (using the form `@localpart:homeserver.tld`).
-* The `feeds` part is an array of which each element represents a feed to poll and parse:
-    + The `url` is the URL at which the feed can be retrieved in RSS or Atom format.
-    + The `event_type` is the event class used when sending the event. It must have been previously declared by an Informo administrator to be accessible by a client. It must begin with `network.informo.news`.
-    + The `poll_interval` is the interval in seconds between two retrievals of the feed.
-* The `database` part contains all the necessary parameters to connect to the database:
-    + The `path` is the path to the SQLite3 database.
-
-The database is used by the Informo feeder to store data about the latest poll. It is mainly used to keep track of the latest poll for each feed, so an item doesn't get published more than once on the network, and so a restart doesn't reset the interval between two polls.
+The configuration file itself is documented in the [`config.sample.yaml` file](/config.sample.yaml).
 
 ## Getting your content on Informo
 

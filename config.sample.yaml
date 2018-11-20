@@ -7,7 +7,7 @@ keys:
 matrix:
   homeserver: matrix.org
   access_token: ACCESS_TOKEN
-  mxid: @acmenews:matrix.org
+  mxid: "@acmenews:matrix.org"
 
 # Configuration for feeds to poll and parse, and polling interval
 feeds:
